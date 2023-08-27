@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
@@ -8,23 +8,35 @@ export class PostsService {
   constructor(private readonly repository: PostsRepository) {
     
   }
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  async create(createPostDto: CreatePostDto) {
+    return await this.repository.create(createPostDto);
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll() {
+    return await this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    const result = await this.repository.findOne(id)
+    if (!result) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+
+    return result
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: UpdatePostDto) {
+    const result = await this.repository.update(id, updatePostDto)
+    if (!result) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+
+    return result
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    const checkPublications = await this.repository.checkPublications(id)
+    if (checkPublications) throw new HttpException("Media is already on publication, cant delete", HttpStatus.FORBIDDEN)
+    
+    const result = await this.repository.remove(id)
+    if (!result) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+
+    return result
   }
 }
