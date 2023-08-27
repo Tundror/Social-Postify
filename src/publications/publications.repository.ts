@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
-import { PublicationsRepository } from './publications.repository';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class PublicationsService {
-  constructor(private readonly repository: PublicationsRepository) {
+export class PublicationsRepository {
+  constructor(private readonly prisma: PrismaService) {
     
   }
   create(createPublicationDto: CreatePublicationDto) {
