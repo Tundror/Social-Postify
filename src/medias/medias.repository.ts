@@ -9,22 +9,56 @@ export class MediasRepository {
     
   }
   create(createMediaDto: CreateMediaDto) {
-    return 'This action adds a new media';
+    return this.prisma.media.create({
+      data: createMediaDto
+    })
+  }
+
+
+  findAllWithoutId () {
+    return this.prisma.media.findMany({
+      select: {
+        title: true,
+        username: true
+      }
+    })
+  }
+
+  checkPublications (id: number) {
+    return this.prisma.publication.findFirst({
+      where: {
+        mediaId: id
+      }
+    })
   }
 
   findAll() {
-    return `This action returns all medias`;
+    return this.prisma.media.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} media`;
+    return this.prisma.media.findFirst({
+      where: {
+        id
+      }
+    });
   }
 
   update(id: number, updateMediaDto: UpdateMediaDto) {
-    return `This action updates a #${id} media`;
+    return this.prisma.media.update({
+      data: updateMediaDto,
+      where: {
+        id
+      }
+
+    })
   }
 
   remove(id: number) {
-    return `This action removes a #${id} media`;
+    return this.prisma.media.delete({
+      where: {
+        id
+      }
+    });
   }
 }
