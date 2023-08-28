@@ -24,11 +24,11 @@ export class PublicationsController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
-    return this.publicationsService.update(+id, updatePublicationDto);
+    return this.publicationsService.update(id, updatePublicationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.publicationsService.remove(+id);
+    return this.publicationsService.remove(id);
   }
 }

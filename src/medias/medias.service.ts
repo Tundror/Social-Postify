@@ -32,7 +32,7 @@ export class MediasService {
     return result
   }
 
-  async update(id: number, updateMediaDto: UpdateMediaDto) {
+  async update(id: string, updateMediaDto: UpdateMediaDto) {
     const checkDuplicate = await this.repository.findAllWithoutId()
     const duplicateExists = checkDuplicate.some(item => {
       return item.title === updateMediaDto.title && item.username === updateMediaDto.username;
@@ -41,19 +41,24 @@ export class MediasService {
     if (duplicateExists) {
       throw new HttpException("Title and username combination already exists!", HttpStatus.CONFLICT);
     }
+    const parsedId = parseInt(id)
+    const checkId = await this.repository.findOne(parsedId);
+    if (!checkId) throw new HttpException("Media not found", HttpStatus.NOT_FOUND)
 
-    const result = await this.repository.update(id, updateMediaDto);
-    if (!result) throw new HttpException("Media not found", HttpStatus.NOT_FOUND)
+    const result = await this.repository.update(parsedId, updateMediaDto);
 
     return result
   }
 
-  async remove(id: number) {
-    const checkPublications = await this.repository.checkPublications(id)
+  async remove(id: string) {
+    const parsedId = parseInt(id)
+    const checkPublications = await this.repository.checkPublications(parsedId)
     if (checkPublications) throw new HttpException("Media is already on publication, cant delete", HttpStatus.FORBIDDEN)
-    
-    const result = await this.repository.remove(id);
-    if (!result) throw new HttpException("Media not found", HttpStatus.NOT_FOUND)
+
+    const checkId = await this.repository.findOne(parsedId);
+    if (!checkId) throw new HttpException("Media not found", HttpStatus.NOT_FOUND)
+
+    const result = await this.repository.remove(parsedId);
 
     return result
   }

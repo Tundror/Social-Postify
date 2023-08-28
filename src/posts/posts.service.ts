@@ -41,19 +41,27 @@ export class PostsService {
     return { id: postId, title, text, image };
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
-    const result = await this.repository.update(id, updatePostDto)
-    if (!result) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    const parsedId = parseInt(id)
+    const checkId = await this.repository.findOne(parsedId)
+    if (!checkId) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    console.log(checkId)
+
+    const result = await this.repository.update(parsedId, updatePostDto)
+    
     return result
   }
 
-  async remove(id: number) {
-    const checkPublications = await this.repository.checkPublications(id)
+  async remove(id: string) {
+    const parsedId = parseInt(id)
+    const checkId = await this.repository.findOne(parsedId)
+    if (!checkId) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+
+    const checkPublications = await this.repository.checkPublications(parsedId)
     if (checkPublications) throw new HttpException("Media is already on publication, cant delete", HttpStatus.FORBIDDEN)
 
-    const result = await this.repository.remove(id)
-    if (!result) throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
-
+    const result = await this.repository.remove(parsedId)
+    
     return result
   }
 }

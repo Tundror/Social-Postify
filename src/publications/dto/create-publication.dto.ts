@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class CreatePublicationDto {
     @IsNumber()
@@ -8,7 +9,7 @@ export class CreatePublicationDto {
     @IsNotEmpty()
     postId: number;
 
-    @IsDate()
+    @Type(() => Date)
     @IsNotEmpty()
     date: Date
 }

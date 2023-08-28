@@ -24,11 +24,11 @@ export class MediasController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return this.mediasService.update(+id, updateMediaDto);
+    return this.mediasService.update(id, updateMediaDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mediasService.remove(+id);
+    return this.mediasService.remove(id);
   }
 }
